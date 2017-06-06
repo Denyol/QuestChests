@@ -1,0 +1,8 @@
+name: QuestChests
+version: 1.0
+author: Denyol
+main: com.denyol.questchests.QuestChests
+
+commands:
+  questchest:
+    description: Command to manage QuestChests.
