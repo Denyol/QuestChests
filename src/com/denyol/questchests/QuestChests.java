@@ -31,6 +31,7 @@ public class QuestChests extends JavaPlugin implements Listener {
         getConfig().addDefault("database.name", "default");
         getConfig().addDefault("database.url", "mysql://default:3306/");
         getConfig().addDefault("database.password", "password");
+        getConfig().addDefault("questchests.fireworks", true);
         getConfig().options().copyDefaults(true);
         saveConfig();
 

@@ -34,28 +34,6 @@ public final class DatabaseManager
             return false;
         else
             return true;
-        /*
-        String query = "SELECT `id` FROM `QuestChests` WHERE (`x` = '" + chestLocation.getBlockX()
-                + "' AND `y` = '" + chestLocation.getBlockY()
-                + "' AND `z` = '" + chestLocation.getBlockZ()
-                + "' AND `world` = '" + chestLocation.getWorld().getName() + "') LIMIT 0,1;";
-
-        try(PreparedStatement statement = QuestChests.getConnection().prepareStatement(query);
-            ResultSet rs = statement.executeQuery(query))
-        {
-            if(rs.next())
-                return true;
-            else
-                return false;
-        }
-        catch (SQLException e)
-        {
-            plugin.getLogger().severe("Could not check if this chest is registered! Please contact an admin.");
-            player.sendMessage(ChatColor.RED + "Could not execute query to check if chest is registered!");
-            e.printStackTrace();
-        }
-
-        return true;*/
     }
 
     public static int getChestID(@NotNull Location chestLocation, QuestChests plugin)
@@ -155,14 +133,20 @@ public final class DatabaseManager
                 + "' AND `y` = '" + chestLocation.getBlockY()
                 + "' AND `z` = '" + chestLocation.getBlockZ() + "');";
 
+        int id = DatabaseManager.getChestID(chestLocation, plugin);
+
+        String removePlayerEntriesQuery = "DELETE FROM `QuestChestsPlayers` WHERE (`id` = '" + id + "');";
+
         new BukkitRunnable()
         {
             @Override
             public void run()
             {
-                try(PreparedStatement statement = QuestChests.getConnection().prepareStatement(query))
+                try(PreparedStatement statement = QuestChests.getConnection().prepareStatement(query);
+                    PreparedStatement playerStmt = QuestChests.getConnection().prepareStatement(removePlayerEntriesQuery))
                 {
                     statement.executeUpdate();
+                    playerStmt.executeUpdate();
                 }
                 catch (SQLException e)
                 {

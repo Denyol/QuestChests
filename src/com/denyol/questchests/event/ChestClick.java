@@ -8,6 +8,8 @@ import com.denyol.questchests.util.HiddenStringUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 /**
  * Created for QuestChests on 03/Jun/2017 by Denyol.
@@ -129,6 +132,13 @@ public class ChestClick implements Listener
                 player.playNote(player.getLocation(), Instrument.PIANO, Note.natural(1, Note.Tone.C));
                 DatabaseManager.setPlayerOpened(chestID, plugin, QuestChests.getConnection(), player.getUniqueId());
                 player.closeInventory();
+                if(plugin.getConfig().getBoolean("questchests.fireworks"))
+                {
+                    Firework firework = (Firework) player.getWorld().spawn(player.getLocation(), Firework.class);
+                    FireworkMeta fm = firework.getFireworkMeta();
+                    fm.addEffect(FireworkEffect.builder().trail(true).withColor(Color.GREEN).withFade(Color.ORANGE).with(FireworkEffect.Type.BURST).build());
+                    firework.setFireworkMeta(fm);
+                }
             }
 
             event.setCancelled(true);
